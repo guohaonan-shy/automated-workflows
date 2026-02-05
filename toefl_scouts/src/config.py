@@ -118,9 +118,21 @@ class Config:
     
     @property
     def database_path(self) -> str:
-        """Path to SQLite database"""
-        db_path = Path(__file__).parent.parent / "data" / "pushed_posts.db"
-        db_path.parent.mkdir(parents=True, exist_ok=True)
+        """Path to SQLite database
+        
+        On Railway: uses /app/data (Volume mount point)
+        Local: uses ./data relative to project
+        """
+        import os
+        
+        # Railway Volume mount point
+        if os.path.exists('/app/data'):
+            db_path = Path('/app/data/pushed_posts.db')
+        else:
+            # Local development
+            db_path = Path(__file__).parent.parent / "data" / "pushed_posts.db"
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+        
         return str(db_path)
     
     # ========== Discord Config ==========
