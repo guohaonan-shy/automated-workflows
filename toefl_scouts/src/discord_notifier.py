@@ -62,7 +62,7 @@ class DiscordNotifier:
         date_str = datetime.now().strftime('%Y-%m-%d')
         
         message = f"""━━━━━━━━━━━━━━━━━━━━━━━
-📊 **TOEFL Reddit 每日机会报告**
+📊 **TOEFL Reddit Daily Report**
 📅 {date_str}
 ━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -71,7 +71,7 @@ class DiscordNotifier:
         # Add posts section
         if posts:
             message += """═══════════════════════
-📌 **TOP 10 优质帖子**
+📌 **TOP Posts**
 ═══════════════════════
 
 """
@@ -82,7 +82,7 @@ class DiscordNotifier:
         # Add comments section
         if comments:
             message += """═══════════════════════
-💬 **TOP 10 优质评论**
+💬 **TOP Comments**
 ═══════════════════════
 
 """
@@ -91,7 +91,7 @@ class DiscordNotifier:
                 message += "\n---\n\n"
         
         message += "━━━━━━━━━━━━━━━━━━━━━━━\n"
-        message += "✨ 祝你获得更多社区影响力！"
+        message += "✨ Good luck with your outreach!"
         
         return message
     
@@ -107,7 +107,7 @@ class DiscordNotifier:
         """
         score = post.get('score', 0)
         product_fit = post.get('product_fit', 'medium')
-        reply_strategy = post.get('reply_strategy', {})
+        reply_candidates = post.get('reply_candidates', [])
         
         # Product fit emoji
         fit_emoji = {
@@ -116,30 +116,31 @@ class DiscordNotifier:
             'low': '◽'
         }.get(product_fit, '🔸')
         
-        message = f"""**【#{rank}】⭐ 评分: {score:.1f}/10**
+        message = f"""**【#{rank}】⭐ Score: {score:.1f}/10**
 📝 **{post['title']}**
-🏷️ 主题: {post.get('topic', 'General')}
-🔥 热度: {post['score']}↑, {post['num_comments']}💬
-⏰ 发帖: {self._format_time_ago(post['created_utc'])}
-{fit_emoji} 契合度: {product_fit}
+🏷️ Topic: {post.get('topic', 'General')}
+🔥 Engagement: {post['score']}↑, {post['num_comments']}💬
+⏰ Posted: {self._format_time_ago(post['created_utc'])}
+{fit_emoji} Product Fit: {product_fit}
 
-💡 **回复策略:**
 """
         
-        # Add key points
-        key_points = reply_strategy.get('key_points', [])
-        for i, point in enumerate(key_points[:4], 1):
-            message += f"{i}. {point}\n"
-        
-        # Add angle and product mention
-        if 'angle' in reply_strategy:
-            message += f"\n📐 切入角度: {reply_strategy['angle']}\n"
-        
-        if 'product_mention' in reply_strategy:
-            message += f"🎁 产品植入: {reply_strategy['product_mention']}\n"
+        # Add reply candidates
+        if reply_candidates:
+            message += "📋 **Reply Candidates (Copy & Paste Ready):**\n\n"
+            
+            for i, candidate in enumerate(reply_candidates, 1):
+                style = candidate.get('style', f'Option {i}')
+                tone = candidate.get('tone', '')
+                draft = candidate.get('draft', '')
+                why = candidate.get('why', '')
+                
+                message += f"**【{i}】{style}** ({tone})\n"
+                message += f"💭 *Why this: {why}*\n"
+                message += f"```\n{draft}\n```\n\n"
         
         # Add link
-        message += f"\n🔗 [直达帖子]({post['url']})"
+        message += f"🔗 [Go to Post]({post['url']})"
         
         return message
     
@@ -156,15 +157,15 @@ class DiscordNotifier:
         score = comment.get('score', 0)
         opportunity_type = comment.get('opportunity_type', 'supplement')
         product_fit = comment.get('product_fit', 'medium')
-        reply_strategy = comment.get('reply_strategy', {})
+        reply_candidates = comment.get('reply_candidates', [])
         
-        # Opportunity type emoji
-        type_emoji = {
-            'supplement': '➕',
-            'correct': '✏️',
-            'alternative': '🔄',
-            'disagree': '💭'
-        }.get(opportunity_type, '💬')
+        # Opportunity type emoji & label
+        type_info = {
+            'supplement': ('➕', 'Add Value'),
+            'correct': ('✏️', 'Correct Info'),
+            'alternative': ('🔄', 'Offer Alternative'),
+            'disagree': ('💭', 'Politely Disagree')
+        }.get(opportunity_type, ('💬', 'Reply'))
         
         # Product fit emoji
         fit_emoji = {
@@ -178,31 +179,34 @@ class DiscordNotifier:
         if len(comment['body']) > 150:
             body_preview += "..."
         
-        message = f"""**【#{rank}】⭐ 评分: {score:.1f}/10**
-📍 **原帖:** "{comment['post_title'][:60]}..."
-💬 评论: "{body_preview}"
-👤 作者: u/{comment['author']}
-🔥 热度: {comment['score']}↑
-⏰ 评论: {self._format_time_ago(comment['created_utc'])}
-{fit_emoji} 契合度: {product_fit}
+        message = f"""**【#{rank}】⭐ Score: {score:.1f}/10**
+📍 **Original Post:** "{comment['post_title'][:60]}..."
+💬 Comment: "{body_preview}"
+👤 Author: u/{comment['author']}
+🔥 Engagement: {comment['score']}↑
+⏰ Posted: {self._format_time_ago(comment['created_utc'])}
+{fit_emoji} Product Fit: {product_fit}
 
-{type_emoji} **回复机会:** {opportunity_type}
-💭 原因: {comment.get('reason', 'N/A')[:100]}
+{type_info[0]} **Opportunity:** {type_info[1]}
 
-💡 **回复要点:**
 """
         
-        # Add key points
-        key_points = reply_strategy.get('key_points', [])
-        for i, point in enumerate(key_points[:4], 1):
-            message += f"{i}. {point}\n"
-        
-        # Add angle
-        if 'angle' in reply_strategy:
-            message += f"\n📐 策略: {reply_strategy['angle']}\n"
+        # Add reply candidates
+        if reply_candidates:
+            message += "📋 **Reply Candidates (Copy & Paste Ready):**\n\n"
+            
+            for i, candidate in enumerate(reply_candidates, 1):
+                style = candidate.get('style', f'Option {i}')
+                tone = candidate.get('tone', '')
+                draft = candidate.get('draft', '')
+                why = candidate.get('why', '')
+                
+                message += f"**【{i}】{style}** ({tone})\n"
+                message += f"💭 *Why this: {why}*\n"
+                message += f"```\n{draft}\n```\n\n"
         
         # Add link
-        message += f"\n🔗 [直达评论]({comment['url']})"
+        message += f"🔗 [Go to Comment]({comment['url']})"
         
         return message
     
@@ -213,7 +217,7 @@ class DiscordNotifier:
             dt: Datetime object
             
         Returns:
-            Time ago string (e.g., "3小时前", "2天前")
+            Time ago string (e.g., "3 hours ago", "2 days ago")
         """
         now = datetime.now()
         diff = now - dt
@@ -221,11 +225,14 @@ class DiscordNotifier:
         hours = diff.total_seconds() / 3600
         
         if hours < 1:
-            return f"{int(diff.total_seconds() / 60)}分钟前"
+            mins = int(diff.total_seconds() / 60)
+            return f"{mins} min{'s' if mins != 1 else ''} ago"
         elif hours < 24:
-            return f"{int(hours)}小时前"
+            hrs = int(hours)
+            return f"{hrs} hour{'s' if hrs != 1 else ''} ago"
         else:
-            return f"{int(hours / 24)}天前"
+            days = int(hours / 24)
+            return f"{days} day{'s' if days != 1 else ''} ago"
     
     def _send_message(self, message: str):
         """Send message to Discord webhook

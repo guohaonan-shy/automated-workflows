@@ -108,7 +108,7 @@ Your task:
 1. Determine if this is a genuine help-seeking post (not spam/meme/off-topic)
 2. Identify the TOEFL topic (Reading/Listening/Speaking/Writing/General)
 3. Evaluate reply opportunity value (1-10 score)
-4. Generate reply strategy
+4. Generate 2-3 reply candidates with different approaches
 
 Scoring criteria:
 - Post quality: Is it specific, clear, and detailed? (0-3 points)
@@ -122,13 +122,34 @@ Return ONLY valid JSON in this exact format:
   "topic": "Reading/Listening/Speaking/Writing/General",
   "score": 8.5,
   "product_fit": "high/medium/low",
-  "reply_strategy": {{
-    "key_points": ["point 1", "point 2", "point 3"],
-    "angle": "brief description of approach",
-    "product_mention": "how to naturally introduce TOEFLAIR"
-  }},
+  "reply_candidates": [
+    {{
+      "style": "Expert Mentor",
+      "tone": "professional",
+      "draft": "Full reply draft in English (100-200 words, ready to copy-paste)",
+      "why": "Shows expertise, builds credibility"
+    }},
+    {{
+      "style": "Friendly Peer", 
+      "tone": "casual",
+      "draft": "Full reply draft in English (100-200 words, ready to copy-paste)",
+      "why": "Relatable, builds rapport"
+    }},
+    {{
+      "style": "Practical Helper",
+      "tone": "direct",
+      "draft": "Full reply draft in English (100-200 words, ready to copy-paste)",
+      "why": "Straight to the point, saves time"
+    }}
+  ],
   "reason": "brief explanation of score"
-}}"""
+}}
+
+Important: 
+- ALL output must be in English (Reddit audience)
+- Each draft should be ready to copy-paste
+- Naturally mention TOEFLAIR where appropriate
+- Keep drafts 100-200 words each"""
         
         return prompt
     
@@ -206,7 +227,7 @@ Your task:
 1. Evaluate the comment quality (is it helpful, accurate, complete?)
 2. Identify reply opportunities (gaps, misconceptions, additions)
 3. Score the opportunity value (1-10)
-4. Generate reply strategy
+4. Generate 2-3 reply candidates with different approaches
 
 Scoring criteria:
 - Comment quality gap: Incomplete/inaccurate advice? (0-3 points)
@@ -220,13 +241,35 @@ Return ONLY valid JSON in this exact format:
   "opportunity_type": "supplement/correct/alternative/disagree",
   "score": 7.8,
   "product_fit": "high/medium/low",
-  "reply_strategy": {{
-    "key_points": ["point 1", "point 2", "point 3"],
-    "angle": "brief description (e.g., 'agree then expand', 'politely correct')",
-    "product_mention": "how to naturally introduce TOEFLAIR"
-  }},
+  "reply_candidates": [
+    {{
+      "style": "Agree & Expand",
+      "tone": "agreeable",
+      "draft": "Full reply draft in English (80-150 words, ready to copy-paste)",
+      "why": "Non-confrontational, adds value without stepping on toes"
+    }},
+    {{
+      "style": "Personal Experience",
+      "tone": "personal",
+      "draft": "Full reply draft in English (80-150 words, ready to copy-paste)",
+      "why": "Builds credibility through personal story"
+    }},
+    {{
+      "style": "Resource Sharer",
+      "tone": "helpful",
+      "draft": "Full reply draft in English (80-150 words, ready to copy-paste)",
+      "why": "Provides immediate practical value"
+    }}
+  ],
   "reason": "brief explanation of score and opportunity"
-}}"""
+}}
+
+Important:
+- ALL output must be in English (Reddit audience)
+- Each draft should be ready to copy-paste
+- Reference the original comment naturally
+- Mention TOEFLAIR where appropriate
+- Keep drafts 80-150 words each"""
         
         return prompt
     
