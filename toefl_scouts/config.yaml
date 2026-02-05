@@ -1,0 +1,47 @@
+# TOEFL Reddit Scout Configuration
+
+reddit:
+  # Subreddits to monitor
+  subreddits:
+    - TOEFL
+    - ToeflAdvice
+  
+  # Posts per subreddit (split across hot/rising/top/new)
+  post_limit: 50
+  
+  # Time filter for "top" posts
+  time_filter: day  # hour, day, week, month, year, all
+
+gemini:
+  model: gemini-1.5-flash  # gemini-1.5-flash or gemini-1.5-pro
+  max_tokens: 2048
+  temperature: 0.3  # Lower = more focused, Higher = more creative
+
+filters:
+  # Post filters
+  min_upvotes: 5
+  min_comments: 2
+  
+  # Comment filters
+  min_comment_score: 3
+  
+  # Keywords to identify help-seeking posts
+  keywords:
+    - help
+    - advice
+    - improve
+    - score
+    - struggling
+    - tips
+    - recommend
+    - preparation
+    - study
+    - practice
+
+database:
+  # TTL for pushed posts (days)
+  # Posts older than this will be cleaned up
+  ttl_days: 3
+
+output:
+  top_n: 10  # Number of top opportunities to return (both posts and comments)

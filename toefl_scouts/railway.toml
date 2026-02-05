@@ -1,0 +1,9 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+# Start command
+startCommand = "python main.py"
+
+# Cron job: run every day at 2:00 AM UTC (10:00 AM Beijing Time)
+cronSchedule = "0 2 * * *"
