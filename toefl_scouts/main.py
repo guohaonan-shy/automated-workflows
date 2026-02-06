@@ -97,7 +97,6 @@ def main():
         analyzer = ContentAnalyzer(
             api_key=config.gemini_api_key,
             model=config.gemini_model,
-            max_tokens=config.gemini_max_tokens,
             temperature=config.gemini_temperature
         )
         

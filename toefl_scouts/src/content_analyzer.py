@@ -17,7 +17,6 @@ class ContentAnalyzer:
         self, 
         api_key: str,
         model: str = 'gemini-3-flash-preview',
-        max_tokens: int = 2048,
         temperature: float = 1.0
     ):
         """Initialize Gemini API
@@ -25,12 +24,10 @@ class ContentAnalyzer:
         Args:
             api_key: Google Gemini API key
             model: Model name
-            max_tokens: Maximum tokens for response
             temperature: Generation temperature (default 1.0 recommended for Gemini 3)
         """
         self.client = genai.Client(api_key=api_key)
         self.model_name = model
-        self.max_tokens = max_tokens
         self.temperature = temperature
         
         logger.info(f"Gemini API initialized with model {model}")
@@ -79,7 +76,6 @@ class ContentAnalyzer:
                 model=self.model_name,
                 contents=prompt,
                 config=types.GenerateContentConfig(
-                    max_output_tokens=self.max_tokens,
                     temperature=self.temperature,
                     thinking_config=types.ThinkingConfig(thinking_level="low"),
                 ),
@@ -206,7 +202,6 @@ Important:
                 model=self.model_name,
                 contents=prompt,
                 config=types.GenerateContentConfig(
-                    max_output_tokens=self.max_tokens,
                     temperature=self.temperature,
                     thinking_config=types.ThinkingConfig(thinking_level="low"),
                 ),
