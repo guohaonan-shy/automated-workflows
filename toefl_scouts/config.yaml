@@ -13,9 +13,9 @@ reddit:
   time_filter: day  # hour, day, week, month, year, all
 
 gemini:
-  model: gemini-1.5-flash  # gemini-1.5-flash or gemini-1.5-pro
+  model: gemini-3-flash-preview  # gemini-3-flash-preview or gemini-3-pro-preview
   max_tokens: 2048
-  temperature: 0.3  # Lower = more focused, Higher = more creative
+  temperature: 1.0  # Gemini 3 recommends keeping at 1.0
 
 filters:
   # Post filters

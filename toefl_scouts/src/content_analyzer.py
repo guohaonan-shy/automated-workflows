@@ -1,6 +1,7 @@
 """Content analysis module using Google Gemini API"""
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from typing import List, Dict, Any, Optional
 import json
 import logging
@@ -15,9 +16,9 @@ class ContentAnalyzer:
     def __init__(
         self, 
         api_key: str,
-        model: str = 'gemini-1.5-flash',
+        model: str = 'gemini-3-flash-preview',
         max_tokens: int = 2048,
-        temperature: float = 0.3
+        temperature: float = 1.0
     ):
         """Initialize Gemini API
         
@@ -25,10 +26,10 @@ class ContentAnalyzer:
             api_key: Google Gemini API key
             model: Model name
             max_tokens: Maximum tokens for response
-            temperature: Generation temperature
+            temperature: Generation temperature (default 1.0 recommended for Gemini 3)
         """
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(model)
+        self.client = genai.Client(api_key=api_key)
+        self.model_name = model
         self.max_tokens = max_tokens
         self.temperature = temperature
         
@@ -74,7 +75,15 @@ class ContentAnalyzer:
         prompt = self._build_post_analysis_prompt(post)
         
         try:
-            response = self.model.generate_content(prompt)
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    max_output_tokens=self.max_tokens,
+                    temperature=self.temperature,
+                    thinking_config=types.ThinkingConfig(thinking_level="low"),
+                ),
+            )
             result = self._parse_analysis_response(response.text)
             return result
             
@@ -193,7 +202,15 @@ Important:
         prompt = self._build_comment_analysis_prompt(comment)
         
         try:
-            response = self.model.generate_content(prompt)
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    max_output_tokens=self.max_tokens,
+                    temperature=self.temperature,
+                    thinking_config=types.ThinkingConfig(thinking_level="low"),
+                ),
+            )
             result = self._parse_analysis_response(response.text)
             return result
             

@@ -75,7 +75,7 @@ class Config:
     @property
     def gemini_model(self) -> str:
         """Gemini model name"""
-        return self.config.get('gemini', {}).get('model', 'gemini-1.5-flash')
+        return self.config.get('gemini', {}).get('model', 'gemini-3-flash-preview')
     
     @property
     def gemini_max_tokens(self) -> int:

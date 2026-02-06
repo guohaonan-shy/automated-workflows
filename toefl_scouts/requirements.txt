@@ -1,5 +1,5 @@
 # Generated from pyproject.toml for Railway deployment
-google-generativeai>=0.8.3
+google-genai>=1.0.0
 requests>=2.31.0
 pyyaml>=6.0.1
 python-dotenv>=1.0.0
